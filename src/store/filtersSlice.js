@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getPropertyValuesAndCount } from "./helpers";
 
 const initialState = {
   isLoading: false,
@@ -6,20 +7,7 @@ const initialState = {
   allProducts: [],
   filteredProducts: [],
   appliedFilter: {},
-  availableFilters: {
-    category: {
-      isMultiSelect: true,
-      value: [],
-    },
-    gender: {
-      isMultiSelect: false,
-      value: null,
-    },
-    brands: {
-      isMultiSelect: true,
-      value: [],
-    },
-  },
+  availableFilters: {},
 };
 
 const filtersSlice = createSlice({
@@ -45,12 +33,18 @@ const filtersSlice = createSlice({
         delete state.appliedFilter[filterName];
       }
     },
+
+    setAvailableFilters: (state, action) => {
+      const processed = getPropertyValuesAndCount(action.payload);
+      state.availableFilters = processed;
+    },
   },
 });
 
 function isMultiSelect(state, filterName) {
-  return state.availableFilters[filterName].isMultiSelect;
+  return state.availableFilters[filterName]._isMultiSelect;
 }
 
-export const { setFilter, removeFilter } = filtersSlice.actions;
+export const { setFilter, removeFilter, setAvailableFilters } =
+  filtersSlice.actions;
 export default filtersSlice.reducer;

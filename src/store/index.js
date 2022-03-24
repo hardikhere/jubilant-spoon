@@ -5,7 +5,7 @@ import { productsApi } from "services/products";
 export const store = configureStore({
   reducer: combineReducers({
     [productsApi.reducerPath]: productsApi.reducer,
-    filterReducer: filtersReducer,
+    filters: filtersReducer,
   }),
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
