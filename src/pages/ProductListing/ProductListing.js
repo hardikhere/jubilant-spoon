@@ -4,20 +4,41 @@ import ProductTile from "components/ProductTile";
 import { useGetAllProductsQuery } from "services/products";
 import { getPropertyValuesAndCount } from "store/helpers";
 import { useDispatch } from "react-redux";
-import { setAvailableFilters } from "store/filtersSlice";
+import {
+  setAllProducts,
+  setAvailableFilters,
+  setFilter,
+} from "store/filtersSlice";
 import Filters from "./Filters";
+import { useSearchParams } from "react-router-dom";
+import useFilters from "hooks/useFilters";
 
 export default function ProductListing() {
   const dispatch = useDispatch();
+  const { availableFilters, filteredProducts } = useFilters();
+  const [searchParams] = useSearchParams();
   const { isLoading, data: allProducts } = useGetAllProductsQuery();
   const productsArr = useMemo(
     () => Object.values(allProducts || {}),
     [allProducts]
   );
 
+  function getStateFromURL() {
+    searchParams.forEach((value, key) => {
+      dispatch(setFilter({ filterClass: key, filterName: value }));
+    });
+  }
+
   useEffect(() => {
-    if (productsArr.length > 0) dispatch(setAvailableFilters(productsArr));
+    if (productsArr.length > 0) {
+      dispatch(setAvailableFilters(productsArr));
+      dispatch(setAllProducts(productsArr));
+    }
   }, [productsArr, dispatch]);
+
+  useEffect(() => {
+    if (Object.keys(availableFilters).length > 0) getStateFromURL();
+  }, [availableFilters]);
 
   console.log(getPropertyValuesAndCount(productsArr));
   if (isLoading) return <LoadingIndicator />;
@@ -30,7 +51,7 @@ export default function ProductListing() {
 
       {/* Products Listing area */}
       <div className="w-4/5 h-20  flex flex-wrap justify-center">
-        {productsArr?.map((product) => (
+        {filteredProducts?.map((product) => (
           <ProductTile key={product.productId} {...product} />
         ))}
       </div>

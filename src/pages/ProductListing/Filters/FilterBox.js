@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 
 const MAX_TO_SHOW = 8;
 export default function FilterBox(props) {
-  const { filterName, options } = props;
-  const { applyFilter, removeFilterFromState } = useFilters();
+  const { filterName, options, isMultiSelect } = props;
+  const { applyFilter, removeFilterFromState, appliedFilter } = useFilters();
   const [shouldShowAll, setShouldShowAll] = useState(false);
   const optionsArr = useMemo(() => getProcessedOptions(options), [options]);
   const [topToShow, setTopToShow] = useState(optionsArr?.slice(0, MAX_TO_SHOW));
@@ -28,6 +28,9 @@ export default function FilterBox(props) {
         return (
           <div className="flex" key={option.label}>
             <Checkbox
+              isMultiSelect={isMultiSelect}
+              filterClass={filterName}
+              defaultChecked={appliedFilter[filterName]?.includes(option.label)}
               label={option.label}
               id={option.label}
               onClick={handleCheckboxClick}

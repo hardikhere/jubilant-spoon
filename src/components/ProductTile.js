@@ -11,7 +11,7 @@ export default function ProductTile(props) {
           className="w-100 "
           src={image}
           alt="product"
-          loading="lazy"
+          loading="lazy" 
         />
       </div>
       <div>

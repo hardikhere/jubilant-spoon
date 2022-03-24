@@ -5,6 +5,7 @@ const initialState = {
   isLoading: false,
   error: null,
   filteredProducts: [],
+  allProducts: [],
   appliedFilter: {},
   availableFilters: {},
 };
@@ -45,6 +46,33 @@ const filtersSlice = createSlice({
       const processed = getPropertyValuesAndCount(action.payload);
       state.availableFilters = processed;
     },
+
+    filterProducts: (state, action) => {
+      let { appliedFilter, allProducts } = state;
+      if (Object.keys(appliedFilter).length === 0) {
+        state.filteredProducts = allProducts;
+        return;
+      }
+      state.filteredProducts = [];
+      for (const [key, value] of Object.entries(appliedFilter)) {
+        if (Array.isArray(value)) {
+          value.forEach((filterName) => {
+            state.filteredProducts.push(
+              ...allProducts.filter((product) => product[key] === filterName)
+            );
+          });
+        } else {
+          state.filteredProducts.push(
+            ...allProducts.filter((product) => product[key] === value)
+          );
+        }
+      }
+    },
+
+    setAllProducts: (state, action) => {
+      state.allProducts = action.payload;
+      state.filteredProducts = action.payload;
+    },
   },
 });
 
@@ -52,6 +80,11 @@ function isMultiSelect(state, filterClass) {
   return state.availableFilters[filterClass]._isMultiSelect;
 }
 
-export const { setFilter, removeFilter, setAvailableFilters } =
-  filtersSlice.actions;
+export const {
+  setFilter,
+  removeFilter,
+  setAvailableFilters,
+  setAllProducts,
+  filterProducts,
+} = filtersSlice.actions;
 export default filtersSlice.reducer;
