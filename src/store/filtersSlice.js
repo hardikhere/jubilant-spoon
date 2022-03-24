@@ -4,7 +4,6 @@ import { getPropertyValuesAndCount } from "./helpers";
 const initialState = {
   isLoading: false,
   error: null,
-  allProducts: [],
   filteredProducts: [],
   appliedFilter: {},
   availableFilters: {},
@@ -15,22 +14,30 @@ const filtersSlice = createSlice({
   initialState,
   reducers: {
     setFilter: (state, action) => {
-      const filterName = action.payload.filterName;
-      let filterApplied = state.appliedFilter[filterName];
-      if (isMultiSelect(state, filterName)) {
-        filterApplied.push(action.payload.value);
-      } else filterApplied = action.payload.value;
+      const { filterClass, filterName } = action.payload;
+      let filterApplied = state.appliedFilter[filterClass];
+      if (!filterApplied) {
+        if (isMultiSelect(state, filterClass)) {
+          state.appliedFilter[filterClass] = [filterName];
+        } else state.appliedFilter[filterClass] = filterName;
+      } else {
+        if (isMultiSelect(state, filterClass)) {
+          state.appliedFilter[filterClass] = [...filterApplied, filterName];
+        } else state.appliedFilter[filterClass] = filterName;
+      }
     },
 
     removeFilter: (state, action) => {
-      const filterName = action.payload.filterName;
-      let filterApplied = state.appliedFilter[filterName];
-      if (isMultiSelect(state, filterName)) {
-        state.appliedFilter[filterName] = filterApplied.filter(
-          (filter) => filter !== action.payload.value
+      const { filterName, filterClass } = action.payload;
+      let filterApplied = state.appliedFilter[filterClass];
+      if (filterApplied && isMultiSelect(state, filterClass)) {
+        state.appliedFilter[filterClass] = filterApplied.filter(
+          (filter) => filter !== filterName
         );
+        if (state.appliedFilter[filterClass].length === 0)
+          delete state.appliedFilter[filterClass];
       } else {
-        delete state.appliedFilter[filterName];
+        delete state.appliedFilter[filterClass];
       }
     },
 
@@ -41,8 +48,8 @@ const filtersSlice = createSlice({
   },
 });
 
-function isMultiSelect(state, filterName) {
-  return state.availableFilters[filterName]._isMultiSelect;
+function isMultiSelect(state, filterClass) {
+  return state.availableFilters[filterClass]._isMultiSelect;
 }
 
 export const { setFilter, removeFilter, setAvailableFilters } =

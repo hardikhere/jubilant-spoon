@@ -5,10 +5,10 @@ export default function ProductTile(props) {
   return (
     <div className="h-80 w-60 m-3 overflow-hidden">
       {/* image area */}
-      <div className="imageContainer overflow-hidden w-100 h-4/5">
+      <div className="imageContainer bg-rose-100 overflow-hidden w-100  h-4/5">
         <img
           draggable={false}
-          className="w-100"
+          className="w-100 "
           src={image}
           alt="product"
           loading="lazy"
