@@ -1,13 +1,8 @@
-import useFilteredProducts from "hooks/useFilteredProducts";
+import ProductListing from "pages/ProductListing";
 import "./App.css";
 
 function App() {
-  const { applyFilter } = useFilteredProducts();
-  return (
-    <div>
-      <button onClick={() => applyFilter("d", 234)}>Click</button>
-    </div>
-  );
+  return <ProductListing />;
 }
 
 export default App;
