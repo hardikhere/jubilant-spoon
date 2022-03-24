@@ -40,8 +40,13 @@ export default function ProductListing() {
     if (Object.keys(availableFilters).length > 0) getStateFromURL();
   }, [availableFilters]);
 
-  console.log(getPropertyValuesAndCount(productsArr));
-  if (isLoading) return <LoadingIndicator />;
+  if (isLoading)
+    return (
+      <div className="absolute bg-white-500  flex items-center inset-0 justify-center">
+        <LoadingIndicator />
+      </div>
+    );
+
   return (
     <div className="flex m-6">
       {/* filters area */}

@@ -33,9 +33,7 @@ export default function useFilters() {
   }
 
   useEffect(() => {
-    if (Object.keys(appliedFilter).length > 0) {
-      updateSearchParams();
-    }
+    updateSearchParams();
     dispatch(filterProducts());
   }, [appliedFilter]);
 
