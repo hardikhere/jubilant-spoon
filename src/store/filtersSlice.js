@@ -6,7 +6,7 @@ const initialState = {
   error: null,
   filteredProducts: [],
   allProducts: [],
-  appliedFilter: {},
+  appliedFilter: {initial:true},
   availableFilters: {},
 };
 
@@ -15,6 +15,7 @@ const filtersSlice = createSlice({
   initialState,
   reducers: {
     setFilter: (state, action) => {
+      delete state.appliedFilter['initial'];
       const { filterClass, filterName } = action.payload;
       let filterApplied = state.appliedFilter[filterClass];
       if (!filterApplied) {
